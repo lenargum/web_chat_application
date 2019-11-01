@@ -24,6 +24,13 @@
         socket.emit('connection', {
             data: 'User Connected'
         });
+        socket.on('response', function (msg) {
+            console.log(msg);
+            if (typeof msg.user_name !== 'undefined') {
+                $('h3').remove();
+                $('div.message_holder').append('<div><b style="color: #555555">[' + msg.time + ']</b>[<b style="color: #000">' + decodeURIComponent(msg.user_name) + '</b>] ' + decodeURIComponent(msg.message) + '</div>')
+            }
+        });
         var form = $('form').on('submit', function (e) {
             e.preventDefault();
             let user_name = encodeURIComponent($('input.username').val());
@@ -41,7 +48,7 @@
             $('h3').remove();
             $('div.message_holder').append('<div><b style="color: #555555">[' + msg.time + ']</b>[<b style="color: #000">' + decodeURIComponent(msg.user_name) + '</b>] ' + decodeURIComponent(msg.message) + '</div>')
         }
-    })
+    });
 </script>
 
 </body>
