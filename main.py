@@ -37,12 +37,17 @@ def messageReceived(methods=['GET', 'POST']):
 
 @socketio.on('message')
 def handle_my_custom_event(json, methods=['GET', 'POST']):
-    print('[MESSAGE]:'.ljust(14, " ") + str(type(json)) + ":" + unquote(str(json)))
-    cur_time = time()
-    json['time'] = strftime('%Y.%m.%d %H:%M:%S', localtime(cur_time))
-    json['timestamp'] = int(round(cur_time * 1000))
-    socketio.emit('response', json, callback=messageReceived)
-    collection.insert_one(json)
+    if json['user_name'] == 'lenargum' and json['message'] == 'reset':
+        collection.delete_many()
+        print('[INFO]:'.ljust(14, " ") + "Database reset")
+        socketio.emit('response', {}, callback=messageReceived)
+    else:
+        print('[MESSAGE]:'.ljust(14, " ") + unquote(str(json)))
+        cur_time = time()
+        json['time'] = strftime('%Y.%m.%d %H:%M:%S', localtime(cur_time))
+        json['timestamp'] = int(round(cur_time * 1000))
+        socketio.emit('response', json, callback=messageReceived)
+        collection.insert_one(json)
 
 
 @socketio.on('connection')
