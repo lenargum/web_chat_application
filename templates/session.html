@@ -20,12 +20,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
 <script type="text/javascript" charset="utf-8">
     var socket = io.connect('http://' + document.domain + ':' + location.port);
-    socket.on('connect', function () {
+    socket.on('connect', function (msg) {
         socket.emit('connection', {
             data: 'User Connected'
         });
         socket.on('response', function (msg) {
-            console.log(msg);
+            console.log(typeof msg);
             if (typeof msg.user_name !== 'undefined') {
                 $('h3').remove();
                 $('div.message_holder').append('<div><b style="color: #555555">[' + msg.time + ']</b>[<b style="color: #000">' + decodeURIComponent(msg.user_name) + '</b>] ' + decodeURIComponent(msg.message) + '</div>')
@@ -44,6 +44,7 @@
     });
     socket.on('response', function (msg) {
         console.log(msg);
+        console.log(typeof msg);
         if (typeof msg.user_name !== 'undefined') {
             $('h3').remove();
             $('div.message_holder').append('<div><b style="color: #555555">[' + msg.time + ']</b>[<b style="color: #000">' + decodeURIComponent(msg.user_name) + '</b>] ' + decodeURIComponent(msg.message) + '</div>')
