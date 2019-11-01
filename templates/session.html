@@ -37,7 +37,6 @@
     });
     socket.on('response', function (msg) {
         console.log(msg);
-        console.log(typeof msg);
         if (typeof msg.user_name !== 'undefined') {
             $('h3').remove();
             $('div.message_holder').append('<div><b style="color: #555555">[' + msg.time + ']</b>[<b style="color: #000">' + decodeURIComponent(msg.user_name) + '</b>] ' + decodeURIComponent(msg.message) + '</div>')

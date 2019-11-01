@@ -49,7 +49,7 @@ def handle_my_custom_event(json, methods=['GET', 'POST']):
     for message in collection.find().sort([("timestamp", ASCENDING)]):
         del message['_id']
         loaded_json = message
-        print('[DEBUG]:'.ljust(14, " ") + str(type(loaded_json)) + ":" + unquote(str(loaded_json)))
+        #print('[DEBUG]:'.ljust(14, " ") + str(type(loaded_json)) + ":" + unquote(str(loaded_json)))
         socketio.emit('response', loaded_json, callback=messageReceived)
 
 
