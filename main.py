@@ -13,7 +13,7 @@ in2 = "34.227.177.83"
 in3 = "52.23.153.161"
 
 
-client = MongoClient('mongodb://{0}:27017,{1}:27017,{2}:27017/?replicaSet=rs0'.format(in1, in2, in3))
+client = MongoClient('mongodb://{0}:27017,{1}:27017,{2}:27017/?replicaSet=rs0'.format("in1", "in2", "in3"))
 db = client['test']
 collection = db['messages']
 
@@ -47,4 +47,4 @@ def handle_my_custom_event(json, methods=['GET', 'POST']):
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, host='0.0.0.0')
