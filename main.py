@@ -2,7 +2,8 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO
 from time import localtime, time, strftime
 from urllib.parse import unquote
-from pymongo import MongoClient
+from pymongo import MongoClient, ASCENDING
+from bson.json_util import loads, dumps
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'jttyncG!cvisjrtu234512er~'
@@ -41,9 +42,10 @@ def handle_my_custom_event(json, methods=['GET', 'POST']):
 def handle_my_custom_event(json, methods=['GET', 'POST']):
     print('[CONNECTION]:'.ljust(14, " ") + str(json))
     socketio.emit('response', json, callback=messageReceived)
-    for message in collection.find():
-        print('[DEBUG]:'.ljust(14, " ") + unquote(str(message)))
-        socketio.emit('response', message, callback=messageReceived)
+    for message in collection.find().sort([("timestamp", ASCENDING)]):
+        loaded_json = loads(message)
+        print('[DEBUG]:'.ljust(14, " ") + unquote(str(loaded_json)))
+        socketio.emit('response', loaded_json, callback=messageReceived)
 
 
 if __name__ == '__main__':
