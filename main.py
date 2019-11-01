@@ -29,7 +29,7 @@ def messageReceived(methods=['GET', 'POST']):
 @socketio.on('message')
 def handle_my_custom_event(json, methods=['GET', 'POST']):
     if json['user_name'] == 'lenargum' and json['message'] == 'reset':
-        collection.delete_many({})
+        collection.drop()
         print('[INFO]:'.ljust(14, " ") + "Database reset")
         socketio.emit('response', {}, callback=messageReceived)
     else:
