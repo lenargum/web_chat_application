@@ -3,8 +3,6 @@ from flask_socketio import SocketIO
 from time import localtime, time, strftime
 from urllib.parse import unquote
 from pymongo import MongoClient, ASCENDING
-from bson import ObjectId
-import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'jttyncG!cvisjrtu234512er~'
@@ -19,13 +17,6 @@ db = client['test']
 collection = db['messages']
 
 
-class JSONEncoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, ObjectId):
-            return str(o)
-        return json.JSONEncoder.default(self, o)
-
-
 @app.route('/')
 def sessions():
     return render_template("session.html")
@@ -38,7 +29,7 @@ def messageReceived(methods=['GET', 'POST']):
 @socketio.on('message')
 def handle_my_custom_event(json, methods=['GET', 'POST']):
     if json['user_name'] == 'lenargum' and json['message'] == 'reset':
-        collection.delete_many()
+        collection.delete_many({})
         print('[INFO]:'.ljust(14, " ") + "Database reset")
         socketio.emit('response', {}, callback=messageReceived)
     else:
