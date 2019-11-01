@@ -37,7 +37,7 @@ def messageReceived(methods=['GET', 'POST']):
 
 @socketio.on('message')
 def handle_my_custom_event(json, methods=['GET', 'POST']):
-    print('[MESSAGE]:'.ljust(14, " ") + unquote(str(json)))
+    print('[MESSAGE]:'.ljust(14, " ") + str(type(json)) + ":" + unquote(str(json)))
     cur_time = time()
     json['time'] = strftime('%Y.%m.%d %H:%M:%S', localtime(cur_time))
     json['timestamp'] = int(round(cur_time * 1000))
@@ -52,7 +52,7 @@ def handle_my_custom_event(json, methods=['GET', 'POST']):
 
     for message in collection.find().sort([("timestamp", ASCENDING)]):
         loaded_json = JSONEncoder().encode(message)
-        print('[DEBUG]:'.ljust(14, " ") + unquote(str(loaded_json)))
+        print('[DEBUG]:'.ljust(14, " ") + str(type(loaded_json)) + ":" + unquote(str(loaded_json)))
         socketio.emit('response', loaded_json, callback=messageReceived)
 
 
