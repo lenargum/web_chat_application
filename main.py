@@ -3,7 +3,8 @@ from flask_socketio import SocketIO
 from time import localtime, time, strftime
 from urllib.parse import unquote
 from pymongo import MongoClient, ASCENDING
-from bson.json_util import loads, dumps
+from bson import ObjectId
+import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'jttyncG!cvisjrtu234512er~'
@@ -13,10 +14,16 @@ in1 = "34.229.99.127"
 in2 = "34.227.177.83"
 in3 = "52.23.153.161"
 
-
 client = MongoClient('mongodb://{0}:27017,{1}:27017,{2}:27017/?replicaSet=rs0'.format("in1", "in2", "in3"))
 db = client['test']
 collection = db['messages']
+
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
 
 
 @app.route('/')
@@ -42,8 +49,9 @@ def handle_my_custom_event(json, methods=['GET', 'POST']):
 def handle_my_custom_event(json, methods=['GET', 'POST']):
     print('[CONNECTION]:'.ljust(14, " ") + str(json))
     socketio.emit('response', json, callback=messageReceived)
+
     for message in collection.find().sort([("timestamp", ASCENDING)]):
-        loaded_json = loads(message)
+        loaded_json = JSONEncoder().encode(message)
         print('[DEBUG]:'.ljust(14, " ") + unquote(str(loaded_json)))
         socketio.emit('response', loaded_json, callback=messageReceived)
 
